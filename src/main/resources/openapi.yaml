@@ -1,0 +1,118 @@
+openapi: 3.0.3
+info:
+  title: Price Service API
+  description: API to query applicable prices for products based on product ID, brand ID, and application date.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /api/prices:
+    get:
+      summary: Get applicable price for a product
+      description: Returns the applicable price for a product based on the product ID, brand ID, and application date.
+      operationId: getApplicablePrice
+      parameters:
+        - name: productId
+          in: query
+          required: true
+          description: The ID of the product.
+          schema:
+            type: integer
+            example: 35455
+        - name: brandId
+          in: query
+          required: true
+          description: The ID of the brand.
+          schema:
+            type: integer
+            example: 1
+        - name: date
+          in: query
+          required: true
+          description: The application date and time in ISO 8601 format (e.g., `2020-06-14T10:00:00`).
+          schema:
+            type: string
+            format: date
+            example: "2020-06-14T10:00:00"
+      responses:
+        "400":
+          description: Invalid request due to validation errors.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Bad Request"
+                message: "Validation errors in parameters"
+        "200":
+          description: Successful request returning the applicable price for a product.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceResponse"
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                brandId: 1
+                productId: 35455
+                priceList: 1
+                startDate: "2020-06-14 00:00:00"
+                endDate: "2020-12-31 23:59:59"
+                price: 35.50
+                curr: "EUR"
+
+components:
+  schemas:
+    PriceResponse:
+      type: object
+      description: Details of the applicable price.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the price entry.
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        brandId:
+          type: long
+          description: The ID of the brand.
+          example: 1
+        productId:
+          type: integer
+          description: The ID of the product.
+          example: 35455
+        priceList:
+          type: integer
+          description: The price list identifier.
+          example: 1
+        startDate:
+          type: string
+          format: date
+          description: The start date and time of the price application.
+          example: "2020-06-14 00:00:00"
+        endDate:
+          type: string
+          format: date
+          description: The end date and time of the price application.
+          example: "2020-12-31 23:59:59"
+        price:
+          type: number
+          format: double
+          description: The final price to apply.
+          example: 35.50
+        curr:
+          type: string
+          description: The currency of the price.
+          example: "EUR"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: The type of error (e.g., "Bad Request", "Not Found").
+          example: "Bad Request"
+        message:
+          type: string
+          description: A detailed message explaining the error.
+          example: "Validation errors in parameters"
