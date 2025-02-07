@@ -2,7 +2,7 @@
 
 This is a REST API developed as part of a Technical Test to manage products and prices. It is built with Spring Boot and packaged in a Docker container. Below, you'll find instructions on how to run the project, how to run tests, and some code specifications.
 
-## Requisitos
+## Requirements
 
 To run and test this project, you need to have the following installed:
 
